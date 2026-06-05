@@ -21,6 +21,7 @@ public class UserController {
 
     @GetMapping
     public List<User> getUsers() {
+        log.info("Получен запрос на получение списка пользователей");
         return new ArrayList<>(users.values());
     }
 
@@ -41,7 +42,7 @@ public class UserController {
         validateUser(user);
 
         if (!users.containsKey(user.getId())) {
-            throw new ValidationException("Пользователь не найден");
+            throw new ValidationException("Пользователь с id=" + user.getId() + " не найден");
         }
 
         users.put(user.getId(), user);

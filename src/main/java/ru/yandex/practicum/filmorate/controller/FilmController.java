@@ -21,6 +21,7 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
+        log.info("Получен запрос на получение списка фильмов");
         return new ArrayList<>(films.values());
     }
 
@@ -41,7 +42,7 @@ public class FilmController {
         validateFilm(film);
 
         if (!films.containsKey(film.getId())) {
-            throw new ValidationException("Фильм не найден");
+            throw new ValidationException("Фильм с id=" + film.getId() + " не найден");
         }
 
         films.put(film.getId(), film);
