@@ -4,52 +4,84 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
+    private final UserStorage userStorage;
+    private final UserService userService;
 
-    private final Map<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
+
+    @Autowired
+    public UserController(UserStorage userStorage,
+                          UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable Integer id,
+                          @PathVariable Integer friendId) {
+
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable Integer id,
+                             @PathVariable Integer friendId) {
+
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Integer id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(
+            @PathVariable Integer id,
+            @PathVariable Integer otherId) {
+
+        return userService.getCommonFriends(id, otherId);
+    }
 
     @GetMapping
     public List<User> getUsers() {
         log.info("Получен запрос на получение списка пользователей");
-        return new ArrayList<>(users.values());
+        return new ArrayList<>(userStorage.getAll());
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        validateUser(user);
 
-        user.setId(nextId++);
-        users.put(user.getId(), user);
+        validateUser(user);
 
         log.info("Создан пользователь {}", user);
 
-        return user;
+        return userStorage.create(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
         validateUser(user);
 
-        if (!users.containsKey(user.getId())) {
+        if (userStorage.getById(user.getId()) == null) {
             throw new ValidationException("Пользователь с id=" + user.getId() + " не найден");
         }
 
-        users.put(user.getId(), user);
 
         log.info("Обновлен пользователь {}", user);
 
-        return user;
+        return userStorage.update(user);
     }
 
     private void validateUser(User user) {
