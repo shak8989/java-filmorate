@@ -20,7 +20,7 @@ class UserControllerTest {
             new UserService(userStorage);
 
     private final UserController controller =
-            new UserController(userStorage, userService);
+            new UserController(userService);
 
     @Test
     void shouldThrowExceptionWhenEmailIsBlank() {

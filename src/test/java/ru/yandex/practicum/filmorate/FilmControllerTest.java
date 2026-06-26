@@ -24,7 +24,7 @@ class FilmControllerTest {
             new FilmService(filmStorage, userStorage);
 
     private final FilmController controller =
-            new FilmController(filmStorage, filmService);
+            new FilmController(filmService);
 
 
     @Test
