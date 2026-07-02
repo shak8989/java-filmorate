@@ -106,6 +106,13 @@ public class FilmService {
         return filmStorage.getPopular(count);
     }
 
+    public Film getFilmById(Integer id) {
+        return filmStorage.getById(id)
+                .orElseThrow(() ->
+                        new NotFoundException("Фильм с id=" + id + " не найден"));
+    }
+
+
     private Film getFilmOrThrow(Integer id) {
         return filmStorage.getById(id)
                 .orElseThrow(() ->

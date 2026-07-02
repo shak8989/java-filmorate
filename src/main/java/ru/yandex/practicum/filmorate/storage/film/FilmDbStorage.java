@@ -73,8 +73,10 @@ public class FilmDbStorage implements FilmStorage {
         }, keyHolder);
 
         film.setId(keyHolder.getKey().intValue());
+
         saveGenres(film);
-        return film;
+
+        return getById(film.getId()).orElseThrow();
     }
 
     @Override
@@ -99,7 +101,7 @@ public class FilmDbStorage implements FilmStorage {
 
         saveGenres(film);
 
-        return film;
+        return getById(film.getId()).orElseThrow();
     }
 
     private Set<Genre> loadGenres(Integer filmId) {
