@@ -120,6 +120,7 @@ class UserDbStorageTest {
         assertEquals(user2.getId(), friends.get(0).getId());
     }
 
+
     @Test
     void shouldRemoveFriend() {
 
@@ -144,6 +145,7 @@ class UserDbStorageTest {
 
         assertTrue(userStorage.getFriends(user1.getId()).isEmpty());
     }
+
 
     @Test
     void shouldReturnCommonFriends() {
