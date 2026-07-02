@@ -119,6 +119,7 @@ class UserDbStorageTest {
         assertEquals(1, friends.size());
         assertEquals(user2.getId(), friends.get(0).getId());
     }
+
     @Test
     void shouldRemoveFriend() {
 
@@ -143,6 +144,7 @@ class UserDbStorageTest {
 
         assertTrue(userStorage.getFriends(user1.getId()).isEmpty());
     }
+
     @Test
     void shouldReturnCommonFriends() {
 
@@ -150,19 +152,19 @@ class UserDbStorageTest {
         user1.setEmail("u1@mail.ru");
         user1.setLogin("u1");
         user1.setName("U1");
-        user1.setBirthday(LocalDate.of(2000,1,1));
+        user1.setBirthday(LocalDate.of(2000, 1, 1));
 
         User user2 = new User();
         user2.setEmail("u2@mail.ru");
         user2.setLogin("u2");
         user2.setName("U2");
-        user2.setBirthday(LocalDate.of(2000,1,1));
+        user2.setBirthday(LocalDate.of(2000, 1, 1));
 
         User user3 = new User();
         user3.setEmail("u3@mail.ru");
         user3.setLogin("u3");
         user3.setName("U3");
-        user3.setBirthday(LocalDate.of(2000,1,1));
+        user3.setBirthday(LocalDate.of(2000, 1, 1));
 
         user1 = userStorage.create(user1);
         user2 = userStorage.create(user2);
