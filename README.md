@@ -1,10 +1,13 @@
 # java-filmorate
+
 Template repository for Filmorate project.
+
 # Filmorate
 
 ## Схема базы данных
 
 ![ER Diagram](docs/diagram.png)
+
 ## Описание базы данных
 
 ### Таблица users
@@ -48,50 +51,56 @@ Template repository for Filmorate project.
 
 ---
 
-### Таблица genres
-
-Справочник жанров фильмов.
-
----
-
 ### Таблица film_genres
 
 Связующая таблица между фильмами и жанрами.
 
----
+Поля:
+
+- film_id
+- genre_id
 
 ### Таблица likes
 
 Хранит информацию о лайках пользователей.
 
----
+Поля:
 
-### Таблица friendships
+- film_id
+- user_id
 
-Хранит отношения между пользователями.
+#### Таблица friendships
 
-Статусы:
+Хранит информацию о друзьях пользователей.
 
-- PENDING
-- CONFIRMED
+Поля:
+
+- user_id
+- friend_id
+- status
 - ## Основные запросы
+-
 
 ### Получить фильм
 
 ```sql
-SELECT *
+#SELECT *
 FROM films
 WHERE id = ?;
 ```
 
-### Получить жанры фильма
+### Получить рейтинг
 
+SELECT *
+FROM mpa
+WHERE id = ?;
+
+```
+### Получить жанры фильма
 ```sql
-SELECT g.name
-FROM genres g
-JOIN film_genres fg
-ON g.id = fg.genre_id
-WHERE fg.film_id = ?;
+SELECT *
+FROM genres
+ORDER BY id;
 ```
 
 ### Получить ТОП-10 популярных фильмов
@@ -114,6 +123,6 @@ SELECT u.*
 FROM users u
 JOIN friendships fr
 ON u.id = fr.friend_id
-WHERE fr.user_id = ?
-AND fr.status='CONFIRMED';
+WHERE fr.user_id = ?;
 ```
+

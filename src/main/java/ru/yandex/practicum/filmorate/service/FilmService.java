@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ public class FilmService {
     private final UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage,
-                       UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -39,17 +40,17 @@ public class FilmService {
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        Film film = getFilmOrThrow(filmId);
+        getFilmOrThrow(filmId);
         getUserOrThrow(userId);
 
-        film.getLikes().add(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void removeLike(Integer filmId, Integer userId) {
-        Film film = getFilmOrThrow(filmId);
+        getFilmOrThrow(filmId);
         getUserOrThrow(userId);
 
-        film.getLikes().remove(userId);
+        filmStorage.removeLike(filmId, userId);
     }
 
     public List<Film> getPopular(int count) {
