@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -16,7 +17,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -50,11 +51,10 @@ public class UserService {
             throw new ValidationException("Нельзя добавить самого себя в друзья");
         }
 
-        User user = getUserOrThrow(userId);
-        User friend = getUserOrThrow(friendId);
+        getUserOrThrow(userId);
+        getUserOrThrow(friendId);
 
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+        userStorage.addFriend(userId, friendId);
     }
 
     public void removeFriend(Integer userId, Integer friendId) {
@@ -63,20 +63,17 @@ public class UserService {
             throw new ValidationException("Пользователи должны быть разными");
         }
 
-        User user = getUserOrThrow(userId);
-        User friend = getUserOrThrow(friendId);
+        getUserOrThrow(userId);
+        getUserOrThrow(friendId);
 
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+        userStorage.removeFriend(userId, friendId);
     }
 
     public List<User> getFriends(Integer userId) {
 
-        User user = getUserOrThrow(userId);
+        getUserOrThrow(userId);
 
-        return user.getFriends().stream()
-                .map(id -> userStorage.getById(id).orElse(null))
-                .toList();
+        return userStorage.getFriends(userId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer otherId) {
@@ -85,13 +82,10 @@ public class UserService {
             throw new ValidationException("Пользователи должны быть разными");
         }
 
-        User user = getUserOrThrow(userId);
-        User other = getUserOrThrow(otherId);
+        getUserOrThrow(userId);
+        getUserOrThrow(otherId);
 
-        return user.getFriends().stream()
-                .filter(other.getFriends()::contains)
-                .map(id -> userStorage.getById(id).orElse(null))
-                .toList();
+        return userStorage.getCommonFriends(userId, otherId);
     }
 
     private User getUserOrThrow(Integer id) {
